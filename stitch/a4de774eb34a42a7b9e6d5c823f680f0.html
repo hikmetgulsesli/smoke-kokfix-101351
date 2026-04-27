@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kayıt Silme Onayı</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration (The Monolithic Glow Design System) -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-dim": "#131313",
+                    "on-surface": "#e5e2e1",
+                    "tertiary-fixed-dim": "#ffb869",
+                    "surface-container-low": "#1c1b1b",
+                    "on-secondary": "#381385",
+                    "primary-fixed": "#e9ddff",
+                    "inverse-on-surface": "#313030",
+                    "on-primary": "#3c0091",
+                    "surface": "#131313",
+                    "surface-container-highest": "#353534",
+                    "background": "#131313",
+                    "on-primary-fixed-variant": "#5516be",
+                    "on-primary-container": "#340080",
+                    "on-secondary-fixed": "#21005e",
+                    "error": "#ffb4ab",
+                    "secondary": "#cebdff",
+                    "on-surface-variant": "#cbc3d7",
+                    "secondary-fixed-dim": "#cebdff",
+                    "tertiary-container": "#ca801e",
+                    "on-error-container": "#ffdad6",
+                    "error-container": "#93000a",
+                    "secondary-container": "#4f319c",
+                    "primary-fixed-dim": "#d0bcff",
+                    "surface-container-lowest": "#0e0e0e",
+                    "primary": "#d0bcff",
+                    "on-secondary-container": "#bea8ff",
+                    "inverse-primary": "#6d3bd7",
+                    "tertiary": "#ffb869",
+                    "outline": "#958ea0",
+                    "on-tertiary-fixed": "#2c1700",
+                    "surface-container": "#201f1f",
+                    "surface-variant": "#353534",
+                    "surface-container-high": "#2a2a2a",
+                    "on-tertiary": "#482900",
+                    "surface-bright": "#3a3939",
+                    "on-tertiary-container": "#3f2300",
+                    "on-tertiary-fixed-variant": "#673d00",
+                    "on-primary-fixed": "#23005c",
+                    "outline-variant": "#494454",
+                    "inverse-surface": "#e5e2e1",
+                    "secondary-fixed": "#e8ddff",
+                    "on-background": "#e5e2e1",
+                    "primary-container": "#a078ff",
+                    "on-secondary-fixed-variant": "#4f319c",
+                    "surface-tint": "#d0bcff",
+                    "on-error": "#690005",
+                    "tertiary-fixed": "#ffdcbb"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Inter", "sans-serif"],
+                    "display": ["Inter", "sans-serif"],
+                    "body": ["Inter", "sans-serif"],
+                    "label": ["Inter", "sans-serif"]
+            }
+          }
+        }
+      }
+    </script>
+</head>
+<body class="bg-surface-dim font-body text-on-surface antialiased h-screen w-screen flex items-center justify-center overflow-hidden">
+<!-- Atmospheric Background to showcase glassmorphism -->
+<div class="absolute inset-0 z-0">
+<img alt="Abstract dark background" class="w-full h-full object-cover opacity-20" data-alt="abstract minimalist dark 3d shapes in subtle deep gray and violet tones creating a sense of depth" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGQMY5-2LTOmweKiTsv917ZXPXnPm7ESUNiH4NrT6jooMBSX1nAQsD1ypW3Io8JupKIP2vCxIfqGl2AV4VhL0nSF6KaqaQxDs2jixQFogg0g0tSVNBCI9wQ5pm32u9AlfHLuVv4UCaVI3wmm8jcnr2-A0nCqm_KFVcHFVF7NE7DGLRNGQy6ynJdNTp64wUoY8tASUUEYrsw0H8XGgjFY7bsd3hjn6n1gFB6Pi9gskGiNAza6T0i1464bFAf2L1eP1RvX5ZxFBEjvQ"/>
+</div>
+<!-- Radial Dark Vignette Overlay -->
+<div class="absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,transparent_0%,var(--surface-container-lowest)_100%)] opacity-90 pointer-events-none"></div>
+<!-- Modal Backdrop / Container -->
+<main class="relative z-10 flex flex-col items-center justify-center w-[90%] max-w-[420px] p-8 md:p-10 bg-surface-container-highest/15 backdrop-blur-[40px] rounded-[24px] outline outline-1 outline-outline-variant/10 shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
+<!-- Warning Icon -->
+<div class="w-16 h-16 mb-6 rounded-full bg-error-container/20 flex items-center justify-center border border-error-container/30 shadow-[0_0_30px_rgba(255,180,171,0.1)]">
+<span class="material-symbols-outlined text-error text-[32px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<!-- Typography: Editorial Authority -->
+<h2 class="font-headline text-2xl font-semibold text-center text-on-surface tracking-tight mb-3">
+            Bu kaydı silmek istediğinize emin misiniz?
+        </h2>
+<p class="text-on-surface-variant text-center text-sm mb-10 leading-relaxed max-w-[280px]">
+            Bu işlem geri alınamaz. Kayıt sistemden kalıcı olarak temizlenecektir.
+        </p>
+<!-- Buttons: The Minimalist Instruments -->
+<div class="flex flex-col-reverse sm:flex-row w-full gap-3 sm:gap-4">
+<!-- Neutral Cancel Button -->
+<button class="flex-1 py-3.5 px-5 rounded-xl bg-surface-bright/40 hover:bg-surface-bright/70 text-on-surface font-medium transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] outline outline-1 outline-transparent hover:outline-outline-variant/20">
+                İptal
+            </button>
+<!-- Danger Red Button -->
+<button class="flex-1 py-3.5 px-5 rounded-xl bg-error hover:bg-[#ff9c90] text-on-error font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_20px_rgba(255,180,171,0.15)] hover:shadow-[0_0_25px_rgba(255,180,171,0.25)]">
+                Evet, Sil
+            </button>
+</div>
+</main>
+</body></html>

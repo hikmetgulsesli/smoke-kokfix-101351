@@ -1,0 +1,207 @@
+# Sayaç Uygulaması PRD — smoke-kokfix-101351
+
+## 1. Genel Bakış
+
+smoke-kokfix-101351, web tabanlı, tam davranışlı bir sayaç uygulamasıdır. Kullanıcılar ana ekrandan sayaç değerini artırıp azaltabilir, yeni kayıtlar oluşturabilir, geçmiş kayıtları inceleyip silebilir ve uygulama tercihlerini ayarlar panelinden yönetebilir. Tasarım Stitch referansına sadık kalınarak koyu tema ve responsive web deneyimi sunar. Hedef kitle: günlük sayaç ihtiyacı olan bireysel kullanıcılar; arayüz tamamen Türkçedir.
+
+## 2. Hedefler
+
+1. Hızlı ve anlaşılır bir sayaç deneyimi sunmak; ana ekranda sayaç değeri ve temel kontroller anlık erişilebilir olsun.
+2. Kullanıcıların sayaç anlarını başlık ve notla kaydetmesini sağlamak; kayıtlar localStorage’da kalıcı olsun.
+3. Geçmiş kayıtları listeleyip yönetmek; tek kayıt silme ve tümünü temizleme işlevsel olsun.
+4. Koyu tema ve görsel tercihleri ayarlar panelinden yönetmek; tercihler oturumlar arasında korunsun.
+5. Erişilebilir ve responsive bir arayüz inşa etmek; klavye navigasyonu, ekran okuyucu desteği ve mobil uyumluluk sağlansın.
+6. Stitch tasarım diline sadık kalarak tutarlı, sade ve modern bir görünüm elde etmek.
+
+## 3. Tech Stack Detayı
+
+- **Framework:** React 18.3 (Functional Components + Hooks)
+- **Build:** Vite 5.x (HMR, hızlı geliştirme, optimize üretim derlemesi)
+- **Dil:** TypeScript 5.x (strict mode, tip güvenliği)
+- **Styling:** Tailwind CSS 3.4 (utility-first, koyu tema varyantları)
+- **State:** React useState/useReducer (yerel state yönetimi; harici state kütüphanesine gerek yok)
+- **Storage:** localStorage (sayacın anlık değeri, kayıt listesi, tema tercihi)
+- **Routing:** React Router DOM 6.x (SPA, hash-based veya memory router; sayfalar arası geçiş < 100 ms)
+- **Icon Library:** Lucide React (ikonlar aria-label/title ile erişilebilir)
+- **Araçlar:** ESLint + Prettier, Vite PWA plugin (opsiyonel ileri aşama)
+
+## 4. Fonksiyonel Gereksinimler
+
+### 4.1 Ana Ekran Sayaç
+- Ekran ortasında büyük sayaç değeri görüntülenir.
+- Butonlar: "Artır" (+1), "Azalt" (-1), "Sıfırla" (0).
+- Sayaç değeri localStorage’da `counter_value` anahtarıyla saklanır; sayfa yenilendiğinde değer korunur.
+- Sayaç negatif değerlere inebilir.
+- Butonlarda hover ve active durumları Tailwind ile sağlanır.
+
+### 4.2 Üst Bar / Tab Bar İkon Kontrolleri
+- Sol/orta/sağ düzende üç ikon kontrolü: Ekle/Yeni (Plus), Geçmiş/Kayıtlar (History/ClipboardList), Ayarlar (Settings).
+- Her ikon yalnızca ikondan oluşur; `aria-label` ve `title` nitelikleri kesinlikle dolu olmalıdır.
+- `onClick` boş fonksiyon (`() => {}`) olamaz; gerçek handler atanmalıdır.
+- Aktif sekme/panel görsel olarak vurgulanır (örneğin alt çizgi veya arka plan değişimi).
+
+### 4.3 Ekle/Yeni Kayıt Modalı
+- "Ekle" ikonuna tıklandığında modal açılır.
+- Modal içeriği:
+  - Başlık inputu (metin, zorunlu, max 100 karakter, placeholder: "Kayıt başlığı…")
+  - Not textarea (metin, opsiyonel, max 500 karakter, placeholder: "Not ekleyin…")
+  - Butonlar: "İptal" (modalı kapatır, veri sıfırlanır), "Kapat" (aynı davranış), "Oluştur" (kaydı kaydeder).
+- Validasyon: başlık boşsa "Lütfen başlık girin" mesajı gösterilir.
+- Başarı durumunda modal kapanır, kayıt localStorage’da `counter_records` dizisine eklenir; her kayıt `{ id, title, note, value, createdAt }` yapısında saklanır.
+
+### 4.4 Geçmiş/Kayıtlar Ekranı
+- "Geçmiş" ikonuna tıklandığında kayıtlar ekranı/paneli açılır.
+- Kayıtlar yeniden eskiye sıralanır (en yeni üstte).
+- Her kayıt kartında: başlık, not (varsa), o anki sayaç değeri, tarih.
+- İşlemler:
+  - "Sil" butonu (tek kayıt); onay sorusu: "Bu kaydı silmek istediğinize emin misiniz?"
+  - "Tümünü Temizle" butonu; onay sorusu: "Tüm kayıtları silmek istediğinize emin misiniz? Bu işlem geri alınamaz."
+- Boş durum: "Henüz kayıt oluşturulmadı." mesajı ve yönlendirme.
+
+### 4.5 Ayarlar Ekranı
+- "Ayarlar" ikonuna tıklandığında ayarlar paneli/sayfası açılır.
+- Tercihler:
+  - Tema: Koyu / Sistem (varsayılan: Koyu)
+  - Sayaç adım boyutu (opsiyonel ileri aşama): 1, 5, 10
+- Tercihler `counter_preferences` anahtarıyla localStorage’da saklanır.
+- Ayarlar değiştiğinde anlık uygulanır; sayfa yenilendiğinde korunur.
+
+## 5. Veri Modeli
+
+### localStorage Schema
+
+```
+counter_value: number
+  └─ Ana sayaç değeri
+
+counter_records: Array<Record>
+  Record: {
+    id: string (uuid v4)
+    title: string (max 100)
+    note: string (max 500)
+    value: number (kaydedildiği anki sayaç değeri)
+    createdAt: string (ISO 8601)
+  }
+
+counter_preferences: {
+  theme: "dark" | "system"
+  stepSize: 1 | 5 | 10
+}
+```
+
+- Tüm veriler `JSON.stringify` ile yazılır, `JSON.parse` ile okunur.
+- Okuma hatasında (bozuk JSON): varsayılan değerler döndürülür ve storage temizlenir.
+
+## 6. UI/UX Gereksinimleri
+
+### 6.1 Design System Seçimi
+
+- **Aesthetic:** minimal
+- **Renk Paleti:**
+  - Primary: `#8B5CF6` (violet-500)
+  - Secondary: `#A78BFA` (violet-400)
+  - Background: `#0F0F0F` (neutral-950, koyu)
+  - Surface: `#1A1A1A` (neutral-900, kart/panel arka planı)
+  - Text Primary: `#F3F4F6` (gray-100)
+  - Text Secondary: `#9CA3AF` (gray-400)
+  - Border: `#27272A` (zinc-800)
+  - Success: `#22C55E` (green-500)
+  - Error: `#EF4444` (red-500)
+  - Warning: `#F59E0B` (amber-500)
+- **Tipografi:**
+  - Heading: Inter (font-weight 600–700)
+  - Body: Inter (font-weight 400–500)
+- **Icon Library:** Lucide React (tüm ikonlar bu kütüphane üzerinden; emoji kullanılmaz)
+
+### 6.2 Spacing & Components
+
+- Spacing Scale: 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 px
+- Border Radius: 8 px (butonlar, inputlar), 12 px (kartlar, modal), 16 px (paneller)
+- Shadow: `0 4px 24px rgba(0,0,0,0.5)` (modal, panel), `0 1px 3px rgba(0,0,0,0.3)` (kart)
+- Buton Pattern: Primary (violet arka plan, beyaz yazı), Secondary (zinc arka plan), Ghost (şeffaf, hover zinc)
+- Kart Pattern: Surface arka plan, 1 px border, 12 px radius, 16 px padding
+- Form Pattern: Input/textarea Surface arka plan, zinc border, focus violet ring, 8 px radius
+
+## 7. Non-Functional Requirements
+
+### 7.1 Performans
+- İlk yükleme < 2 saniye (Vite + lazy load yok; tek bundle)
+- Sayfa/panel geçişi < 100 ms (client-side routing, React state)
+- Bundle size hedefi: < 200 KB gzipped (Vite tree-shaking ile)
+
+### 7.2 Erişilebilirlik (WCAG 2.1 AA)
+- Klavye navigasyonu: Tab ile tüm kontrollere erişim, Enter/Space ile aktivasyon.
+- Screen reader: Tüm ikon-only butonlar `aria-label` + `title` içerir; modal `role="dialog"`, `aria-modal="true"`.
+- Kontrast: Metin ≥ 4.5:1, büyük metin ≥ 3:1 (Tailwind koyu tema renkleri ile otomatik sağlanır).
+- Focus state: Tüm interaktif elemanlarda `focus-visible:ring-2 focus-visible:ring-violet-500`.
+- Touch hedefi: Butonlar ve ikonlar minimum 44 × 44 px.
+
+### 7.3 Tarayıcı Desteği
+- Chrome 90+, Firefox 88+, Safari 14+, Edge 90+
+- iOS Safari 14+, Android Chrome 90+
+- Responsive: 320 px (mobil) → 1920 px+ (masaüstü)
+
+## 8. Proje Yapısı
+
+```
+src/
+├── components/
+│   ├── CounterDisplay.tsx      # Sayaç değeri gösterimi
+│   ├── CounterControls.tsx     # Artır/Azalt/Sıfırla butonları
+│   ├── TopBar.tsx              # Üst bar ikon kontrolleri
+│   ├── AddRecordModal.tsx      # Yeni kayıt modalı
+│   ├── RecordsPanel.tsx        # Kayıtlar listesi paneli
+│   ├── RecordCard.tsx          # Tek kayıt kartı
+│   ├── SettingsPanel.tsx       # Ayarlar paneli
+│   ├── EmptyState.tsx          # Boş durum mesajı
+│   └── Button.tsx              # Yeniden kullanılabilir buton
+├── screens/
+│   ├── AnaEkran.tsx            # Ana sayaç ekranı
+│   ├── KayitlarEkrani.tsx      # Geçmiş kayıtlar ekranı
+│   └── AyarlarEkrani.tsx       # Ayarlar ekranı
+├── hooks/
+│   ├── useCounter.ts           # Sayaç state + localStorage
+│   ├── useRecords.ts           # Kayıtlar state + localStorage
+│   └── usePreferences.ts       # Tema ve tercihler
+├── utils/
+│   ├── storage.ts              # localStorage okuma/yazma helpers
+│   └── uuid.ts                 # Basit id üretici
+├── types/
+│   └── index.ts                # Record, Preferences tipleri
+├── App.tsx                     # Router + layout
+├── main.tsx                    # Vite entry
+└── index.css                   # Tailwind directives + custom
+```
+
+## 9. Window State (testing / dogfood)
+
+```
+window.app = {
+  state: 'idle',
+  counter: 0,
+  recordsCount: 0,
+  theme: 'dark',
+  currentScreen: 'AnaEkran'
+}
+```
+
+## 10. Ekranlar
+
+| # | Ekran Adı | Tür | Açıklama |
+|---|-----------|-----|----------|
+| 1 | Ana Ekran | dashboard | Büyük sayaç değeri, Artır/Azalt/Sıfırla butonları, üst bar ikonları |
+| 2 | Kayıtlar Ekranı | list | Geçmiş kayıtlar listesi; silme, tümünü temizleme, boş durum |
+| 3 | Ayarlar Ekranı | settings | Tema tercihi, sayaç adım ayarı, tercih kaydı |
+| 4 | Yeni Kayıt Modalı | modal | Başlık inputu, not textarea, İptal/Kapat/Oluştur; Ana Ekran üzerinde açılır |
+| 5 | Kayıt Sil Onay Modalı | modal | Tek kayıt silme onayı; "Evet, Sil" / "İptal" butonları |
+
+Generate a SEPARATE screen design for EVERY page, view, modal, dialog, tab panel, and settings screen described in this PRD. Do NOT skip ANY screen — even if it seems minor.
+
+MANDATORY SCREENS:
+- If the PRD mentions "settings" or "ayarlar" → generate a Settings screen
+- If the PRD mentions tabs or bottom navigation → generate EACH tab view as a separate screen
+- If the PRD mentions modals (statistics, help, share, confirmation) → generate each as a separate screen
+- If the PRD mentions error states, empty states, loading states → generate those too
+- Generate at least as many screens as there are distinct views/pages/modals in the PRD
+
+All visible text must be in Turkish. Use a dark, modern theme.
